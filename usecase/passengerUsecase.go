@@ -1,8 +1,9 @@
 package usecase
 
 import (
-	. "go-rest-mongo/gateway/database/config"
-	. "go-rest-mongo/gateway/database/entity"
+	. "go-rest-mongo-clean-architeture/config"
+	. "go-rest-mongo-clean-architeture/gateway/database/config"
+	. "go-rest-mongo-clean-architeture/gateway/database/entity"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

@@ -3,9 +3,9 @@ package main
 import (
 	"fmt"
 	"github.com/gorilla/mux"
-	oauthController "go-rest-mongo/controller"
-	passengerController "go-rest-mongo/controller"
-	tripController "go-rest-mongo/controller"
+	oauthController "go-rest-mongo-clean-architeture/controller"
+	passengerController "go-rest-mongo-clean-architeture/controller"
+	tripController "go-rest-mongo-clean-architeture/controller"
 	"log"
 	"net/http"
 )

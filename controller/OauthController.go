@@ -10,7 +10,7 @@ import (
 	"net/http"
 	"strings"
 
-	. "go-rest-mongo/gateway/database/config"
+	. "go-rest-mongo-clean-architeture/config"
 )
 
 var (

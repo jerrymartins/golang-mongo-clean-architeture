@@ -3,8 +3,8 @@ package controller
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	. "go-rest-mongo/gateway/database/entity"
-	. "go-rest-mongo/usecase"
+	. "go-rest-mongo-clean-architeture/gateway/database/entity"
+	. "go-rest-mongo-clean-architeture/usecase"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
 )

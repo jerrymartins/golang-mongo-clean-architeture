@@ -3,16 +3,17 @@ package controller
 import (
 	"encoding/json"
 	"github.com/gorilla/mux"
-	. "go-rest-mongo/gateway/database/entity"
-	. "go-rest-mongo/usecase"
+	. "go-rest-mongo-clean-architeture/gateway/database/entity"
+	. "go-rest-mongo-clean-architeture/usecase"
 	"gopkg.in/mgo.v2/bson"
 	"net/http"
+	"time"
 )
 
-var tripDao = TripDAO{}
+var tripUseCase = TripUseCase{}
 
 func GetAllTrips(w http.ResponseWriter, r *http.Request) {
-	trips, err := tripDao.GetAll()
+	trips, err := tripUseCase.GetAll()
 	if err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
@@ -22,7 +23,7 @@ func GetAllTrips(w http.ResponseWriter, r *http.Request) {
 
 func GetTripByID(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	trip, err := tripDao.GetByID(params["id"])
+	trip, err := tripUseCase.GetByID(params["id"])
 	if err != nil {
 		respondWithError(w, http.StatusBadRequest, "Invalid trip ID")
 		return
@@ -38,7 +39,8 @@ func CreateTrip(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	trip.ID = bson.NewObjectId()
-	if err := tripDao.Create(trip); err != nil {
+	trip.ExitTime = time.Now().Unix()
+	if err := tripUseCase.Create(trip); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -53,7 +55,7 @@ func UpdateTrip(w http.ResponseWriter, r *http.Request) {
 		respondWithError(w, http.StatusBadRequest, "Invalid request payload")
 		return
 	}
-	if err := tripDao.Update(params["id"], trip); err != nil {
+	if err := tripUseCase.Update(params["id"], trip); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}
@@ -63,7 +65,7 @@ func UpdateTrip(w http.ResponseWriter, r *http.Request) {
 func DeleteTrip(w http.ResponseWriter, r *http.Request) {
 	defer r.Body.Close()
 	params := mux.Vars(r)
-	if err := tripDao.Delete(params["id"]); err != nil {
+	if err := tripUseCase.Delete(params["id"]); err != nil {
 		respondWithError(w, http.StatusInternalServerError, err.Error())
 		return
 	}

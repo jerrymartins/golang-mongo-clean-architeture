@@ -1,0 +1,39 @@
+version: '3'
+
+services:
+
+  mongo-express:
+    image: mongo-express
+    container_name: borala-me
+    hostname: borala-me
+    ports:
+      - 8081:8081
+    environment:
+      ME_CONFIG_BASICAUTH_USERNAME: boralaME
+      ME_CONFIG_BASICAUTH_PASSWORD: borala2020!ME
+
+      ME_CONFIG_MONGODB_ADMINUSERNAME: borala
+      ME_CONFIG_MONGODB_ADMINPASSWORD: borala2020!
+      ME_CONFIG_MONGODB_PORT: 27017
+    links:
+      - mongo
+    networks:
+      - borala-network
+
+  mongo:
+    image: mongo
+    container_name: borala
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: borala
+      MONGO_INITDB_ROOT_PASSWORD: borala2020!
+    ports:
+      - "27017:27017"
+    networks:
+      - borala-network
+
+volumes:
+  mongodata:
+
+networks:
+  borala-network:
+

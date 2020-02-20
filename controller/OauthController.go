@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/jsonq"
+	"go-rest-mongo-clean-architeture/usecase"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
@@ -20,7 +21,8 @@ var (
 	oauthStateString = "pseudo-random"
 	authenticated    = false
 
-	config = Config{}
+	config     = Config{}
+	jwtUseCase = usecase.CustomPayload{}
 )
 
 func init() {
@@ -46,16 +48,6 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 		}
 
 	})
-}
-
-func HandleMain(w http.ResponseWriter, r *http.Request) {
-	var htmlIndex = `<html>
-<body>
-	<a href="/login">Google Log In</a>
-</body>
-</html>`
-
-	fmt.Fprintf(w, htmlIndex)
 }
 
 func HandleGoogleLogin(w http.ResponseWriter, r *http.Request) {
@@ -84,7 +76,13 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 		fmt.Println("tratar erro caso a propriedade não exista")
 	}
 
-	fmt.Println(authenticated)
+	if authenticated {
+		teste := jwtUseCase.GenerateToken()
+
+		fmt.Println(teste)
+
+		jwtUseCase.VerifyToken(teste)
+	}
 
 	fmt.Fprintf(w, "Content: %s\n", content)
 }

@@ -32,7 +32,7 @@ func main() {
 
 	//api.Use(oauthController.LoggingMiddleware)
 
-	var port = ":3000"
+	var port = ":5000"
 	fmt.Println("Server running in port:", port)
 	log.Fatal(http.ListenAndServe(port, r))
 }

@@ -4,7 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 	"github.com/jmoiron/jsonq"
-	"go-rest-mongo-clean-architeture/usecase"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
 	"io/ioutil"
@@ -21,15 +20,14 @@ var (
 	oauthStateString = "pseudo-random"
 	authenticated    = false
 
-	config     = Config{}
-	jwtUseCase = usecase.CustomPayload{}
+	config = Config{}
 )
 
 func init() {
 	config.Read()
 
 	googleOauthConfig = &oauth2.Config{
-		RedirectURL:  "http://localhost:3000/callback",
+		RedirectURL:  config.UrlApi + "/callback",
 		ClientID:     config.GoogleClientId,
 		ClientSecret: config.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
@@ -44,7 +42,7 @@ func LoggingMiddleware(next http.Handler) http.Handler {
 			// Call the next handler, which can be another middleware in the chain, or the final handler.
 			next.ServeHTTP(w, r)
 		} else {
-			http.Redirect(w, r, "http://localhost:3000/", http.StatusForbidden)
+			http.Redirect(w, r, config.UrlApi, http.StatusForbidden)
 		}
 
 	})
@@ -74,14 +72,6 @@ func HandleGoogleCallback(w http.ResponseWriter, r *http.Request) {
 	// lançar um erro e retornar para a tela de login?
 	if err != nil {
 		fmt.Println("tratar erro caso a propriedade não exista")
-	}
-
-	if authenticated {
-		teste := jwtUseCase.GenerateToken()
-
-		fmt.Println(teste)
-
-		jwtUseCase.VerifyToken(teste)
 	}
 
 	fmt.Fprintf(w, "Content: %s\n", content)

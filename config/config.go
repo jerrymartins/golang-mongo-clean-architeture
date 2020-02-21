@@ -7,6 +7,7 @@ import (
 )
 
 type Config struct {
+	UrlApi             string
 	GoogleClientId     string
 	GoogleClientSecret string
 	MongoUri           string

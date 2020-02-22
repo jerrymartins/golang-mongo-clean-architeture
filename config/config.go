@@ -7,11 +7,13 @@ import (
 )
 
 type Config struct {
-	UrlApi             string
-	GoogleClientId     string
-	GoogleClientSecret string
-	MongoUri           string
-	Database           string
+	UrlApi                 string
+	GoogleClientId         string
+	GoogleClientSecret     string
+	GoogleApiTokenValidate string
+	MongoUri               string
+	Database               string
+	SecretKey              string
 }
 
 func (c *Config) Read() {

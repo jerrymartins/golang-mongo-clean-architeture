@@ -13,6 +13,8 @@ import (
 func main() {
 	r := mux.NewRouter()
 
+	r.HandleFunc("/loginLocal/{token}", oauthController.HandleLoggin)
+
 	r.HandleFunc("/login", oauthController.HandleGoogleLogin)
 	r.HandleFunc("/callback", oauthController.HandleGoogleCallback)
 

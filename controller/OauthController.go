@@ -3,6 +3,7 @@ package controller
 import (
 	"encoding/json"
 	"fmt"
+	"github.com/gorilla/mux"
 	"github.com/jmoiron/jsonq"
 	"golang.org/x/oauth2"
 	"golang.org/x/oauth2/google"
@@ -11,6 +12,7 @@ import (
 	"strings"
 
 	. "go-rest-mongo-clean-architeture/config"
+	. "go-rest-mongo-clean-architeture/usecase"
 )
 
 var (
@@ -19,8 +21,9 @@ var (
 	// TODO: randomize it
 	oauthStateString = "pseudo-random"
 	authenticated    = false
-
-	config = Config{}
+	//oauthUseCase = Oau
+	config       = Config{}
+	oAuthUseCase = OauthUseCase{}
 )
 
 func init() {
@@ -32,6 +35,18 @@ func init() {
 		ClientSecret: config.GoogleClientSecret,
 		Scopes:       []string{"https://www.googleapis.com/auth/userinfo.email"},
 		Endpoint:     google.Endpoint,
+	}
+}
+
+func HandleLoggin(w http.ResponseWriter, r *http.Request) {
+	params := mux.Vars(r)
+	_, err := oAuthUseCase.ValidateGoogleToken(params["token"])
+
+	if err != nil {
+		respondWithError(w, http.StatusInternalServerError, err.Error())
+	} else {
+		tokenJWT, _ := oAuthUseCase.GenerateLocalJWTToken(params["token"])
+		respondWithJson(w, http.StatusOK, tokenJWT)
 	}
 }
 

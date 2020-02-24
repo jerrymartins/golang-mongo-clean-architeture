@@ -13,7 +13,7 @@ import (
 func main() {
 	r := mux.NewRouter()
 
-	r.HandleFunc("/loginLocal/{token}", oauthController.HandleLoggin)
+	r.HandleFunc("/loginLocal/{googleToken}", oauthController.HandleLoggin)
 
 	r.HandleFunc("/login", oauthController.HandleGoogleLogin)
 	r.HandleFunc("/callback", oauthController.HandleGoogleCallback)
@@ -32,7 +32,7 @@ func main() {
 	api.HandleFunc("/v1/trips/{id}", tripController.UpdateTrip).Methods("PUT")
 	api.HandleFunc("/v1/trips/{id}", tripController.DeleteTrip).Methods("DELETE")
 
-	//api.Use(oauthController.LoggingMiddleware)
+	api.Use(oauthController.AuthMiddleware)
 
 	var port = ":5000"
 	fmt.Println("Server running in port:", port)

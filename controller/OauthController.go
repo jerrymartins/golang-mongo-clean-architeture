@@ -12,6 +12,8 @@ import (
 	"strings"
 
 	. "go-rest-mongo-clean-architeture/config"
+	. "go-rest-mongo-clean-architeture/config/error"
+	. "go-rest-mongo-clean-architeture/controller/config"
 	. "go-rest-mongo-clean-architeture/usecase"
 )
 
@@ -40,24 +42,26 @@ func init() {
 
 func HandleLoggin(w http.ResponseWriter, r *http.Request) {
 	params := mux.Vars(r)
-	_, err := oAuthUseCase.ValidateGoogleToken(params["token"])
+
+	tokenJWT, err := oAuthUseCase.GenerateLocalJWTToken(params["googleToken"])
 
 	if err != nil {
-		respondWithError(w, http.StatusInternalServerError, err.Error())
+		requestError := err.(*RequestError)
+		RespondWithError(w, requestError.StatusCode(), requestError.Error())
 	} else {
-		tokenJWT, _ := oAuthUseCase.GenerateLocalJWTToken(params["token"])
-		respondWithJson(w, http.StatusOK, tokenJWT)
+		RespondWithText(w, http.StatusOK, tokenJWT)
 	}
 }
 
-func LoggingMiddleware(next http.Handler) http.Handler {
+func AuthMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		token := r.Header.Get("token")
+		err := oAuthUseCase.ValidateToken([]byte(token))
 
-		if authenticated {
-			// Call the next handler, which can be another middleware in the chain, or the final handler.
-			next.ServeHTTP(w, r)
-		} else {
+		if err != nil {
 			http.Redirect(w, r, config.UrlApi, http.StatusForbidden)
+		} else {
+			next.ServeHTTP(w, r)
 		}
 
 	})
